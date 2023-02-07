@@ -1,0 +1,40 @@
+path:
+  input_data_path: "data/raw/WeMoms_MLE_hiring_test_2023.json.gzip"
+  output_data_root: "data/processed/"
+  interim_data_root: "data/interim/"
+  models_root: "models"
+  logs_root: "logs"
+
+dataset:
+  train_start_date: "2023-01-03"
+  train_end_date: "2023-01-25"
+  eval_start_date: "2023-01-26"
+  eval_end_date: "2023-01-27"
+  test_start_date: "2023-01-28"
+  test_end_date: "2023-02-01"  
+
+features:
+ "base_features": ["trackable_id", "user_id", "tracker_created_at"]
+ "extra_features": ["trackable_id", "user_id", "tracker_created_at"]
+ "post_popularity": ["trackable_id", "tracker_created_at"]
+ "user_post_popularity": ["trackable_id", "user_id", "tracker_created_at"]
+
+feature_definitions:
+  base_features:
+    - "base_features"
+  extra_features:
+    - "extra_features"
+  post_popularity:
+    - "post_popularity_1d"
+    - "post_popularity_7d"
+    - "post_popularity_28d"
+  "user_post_popularity":
+    - "user_post_popularity_1d"
+    - "user_post_popularity_7d"
+    - "user_post_popularity_28d"
+
+model:
+  name: "Linear"
+  version: 1
+  epoch: 50
+  early_stopping_patience: 10
