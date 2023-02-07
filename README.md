@@ -18,6 +18,8 @@ Then install the requirements and the package locally
 make requirements
 ```
 
+The file `WeMoms_MLE_hiring_test_2023.json.gzip` must be in the folder `data/raw`
+
 ## Problem description
 
 ### Context

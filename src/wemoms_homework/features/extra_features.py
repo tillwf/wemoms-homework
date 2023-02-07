@@ -55,7 +55,8 @@ class ExtraFeatures(Feature):
         if save:
             os.makedirs(OUTPUT_ROOT, exist_ok=True)
             df[IDS + EXTRA_COLS].to_parquet(
-                os.path.join(OUTPUT_ROOT, f"extra_features.parquet")
+                os.path.join(OUTPUT_ROOT, f"extra_features.parquet"),
+                index=False
             )
 
         return df[IDS + EXTRA_COLS]

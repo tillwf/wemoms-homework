@@ -62,7 +62,8 @@ class BaseFeatures(Feature):
         if save:
             os.makedirs(OUTPUT_ROOT, exist_ok=True)
             df[IDS + USER_FEATURES + POST_FEATURES].to_parquet(
-                os.path.join(OUTPUT_ROOT, f"base_features.parquet")
+                os.path.join(OUTPUT_ROOT, f"base_features.parquet"),
+                index=False
             )
 
         return df[IDS + USER_FEATURES + POST_FEATURES]

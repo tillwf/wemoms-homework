@@ -23,10 +23,10 @@ requirements:
 dataset:
 	$(PYTHON_INTERPRETER) -m wemoms_homework make-dataset
 
-build_features:
+build-features:
 	$(PYTHON_INTERPRETER) -m wemoms_homework build-features
 
-merge_features:
+merge-features:
 	$(PYTHON_INTERPRETER) -m wemoms_homework merge-features
 
 train:

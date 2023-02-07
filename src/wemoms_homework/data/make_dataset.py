@@ -112,6 +112,7 @@ def make_dataset(
 
     # TRAINSET
     logging.info("\tTrainset")
+    os.makedirs(output_root, exist_ok=True)
     train_path = os.path.join(output_root, "train.parquet")
     trainset = df[(
         (df["tracker_created_at"] >= TRAIN_START_DATE) &

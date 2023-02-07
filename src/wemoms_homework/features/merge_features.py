@@ -69,4 +69,4 @@ def merge_features(data_path, output_root):
     
     path = os.path.join(OUTPUT_ROOT, f"features.parquet")
     logging.info(f"Saving features to {path}")
-    df.to_parquet(path)
+    df.to_parquet(path, index=False)

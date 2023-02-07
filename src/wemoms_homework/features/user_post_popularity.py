@@ -39,6 +39,9 @@ class UserPostPopularity(Feature):
             df_res = pd.concat([df_res, df_temp], axis=0)
             if save:
                 os.makedirs(OUTPUT_ROOT, exist_ok=True)
-                df_temp.to_parquet(os.path.join(OUTPUT_ROOT, f"user_post_popularity_{window}.parquet"))
+                df_temp.to_parquet(
+                    os.path.join(OUTPUT_ROOT, f"user_post_popularity_{window}.parquet"),
+                    index=False
+                )
 
         return df_res
