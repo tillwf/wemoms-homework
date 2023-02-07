@@ -28,7 +28,8 @@ MANIFEST
 
 build
 logs
-models
 venv
+models/best_model_so_far
+models/final_model
 *.parquet
 *.gzip
