@@ -14,10 +14,7 @@ class PostPopularity(Feature):
 
     @classmethod
     def extract_feature(cls, df, save=False, windows=["1d", "7d", "28d"]):
-        """
-        A bot tends to produce more click_ad events in a
-        time window than a real user
-        """
+        """Compute the popularity of a post using windows"""
         logging.info("Computing the features PostPopularity")
 
         def add_post_past_popularity(window):

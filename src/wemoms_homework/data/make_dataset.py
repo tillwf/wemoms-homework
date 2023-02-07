@@ -118,23 +118,27 @@ def make_dataset(
         (df["tracker_created_at"] <= TRAIN_END_DATE)
     )][col_to_keep]
 
-    ############
     # Filtering
-    user_vc = trainset.user_id.value_counts()
-    one_signal_users = (user_vc[user_vc <= 4]).index
+    # We remove users with few signals which are moreover only negative
+    N_SIGNALS = 4
 
-    pos_signal = trainset[trainset.user_id.isin(one_signal_users)]
+    user_vc = trainset.user_id.value_counts()
+    few_signal_users = (user_vc[user_vc <= N_SIGNALS]).index
+
+    pos_signal = trainset[trainset.user_id.isin(few_signal_users)]
 
     pos_signal.loc[:, "sum_hbo"] = pos_signal.groupby("user_id").has_been_opened.transform(sum)
-    one_signal_users_negative = pos_signal[pos_signal["sum_hbo"] == 0].user_id
-    trainset = trainset[~trainset.user_id.isin(one_signal_users_negative)]
-    ############
+    few_signal_users_negative = pos_signal[pos_signal["sum_hbo"] == 0].user_id
+    trainset = trainset[~trainset.user_id.isin(few_signal_users_negative)]
 
+    # Saving the data to parquet
     trainset.to_parquet(train_path, index=False)
 
     # VALIDATION SET
     logging.info("\tValidation set")
     eval_path = os.path.join(output_root, "eval.parquet")
+    
+    # Saving the data to parquet
     df[(
         (df["tracker_created_at"] >= EVAL_START_DATE) &
         (df["tracker_created_at"] <= EVAL_END_DATE)
@@ -143,13 +147,14 @@ def make_dataset(
     # TESTSET
     logging.info("\tTestset")
     test_path = os.path.join(output_root, "test.parquet")
+
+    # Keep one day before the starting date to generate the negative post
     testset = df[(
         (df["tracker_created_at"] >= EVAL_END_DATE) &
         (df["tracker_created_at"] <= TEST_END_DATE)
     )]
 
     # Keep only last day articles
-
     testset["post_creation_date"] = (testset.tracker_created_at - testset.post_age_in_minutes.apply(lambda x: pd.Timedelta(minutes=x))).dt.date
     testset["post_creation_date_plus_one"] = testset["post_creation_date"].apply(lambda x: x + pd.Timedelta(days=1))
     testset["post_from_yesterday"] = testset.tracker_created_at.dt.date == testset.post_creation_date_plus_one
@@ -184,8 +189,10 @@ def make_dataset(
         testset["tracker_created_at"] >= TEST_START_DATE
     )]
 
+    # Saving the data to parquet
     testset[col_to_keep].to_parquet(test_path, index=False)
-    import ipdb; ipdb.set_trace()
+    
+    # Sanity Check
     train_users = pd.read_parquet(train_path)
     logging.info(f"Train Size: {len(train_users)} ({train_users.user_id.nunique()} distinct users)")
 

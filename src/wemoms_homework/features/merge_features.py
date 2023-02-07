@@ -49,6 +49,7 @@ def merge():
     )
 )
 def merge_features(data_path, output_root):
+    """ Merge all parquet file into one big parquet file"""
     df = pd.DataFrame()
 
     for feature_group, features in FEATURE_DEFINITIONS.items():

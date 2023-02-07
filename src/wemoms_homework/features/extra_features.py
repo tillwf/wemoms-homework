@@ -20,6 +20,7 @@ class ExtraFeatures(Feature):
 
     @classmethod
     def extract_feature(cls, df, save=False):
+        """Compute extra features"""
         logging.info("Adding extra features")
 
         # User children age in year to match with `author_children_age_year`
