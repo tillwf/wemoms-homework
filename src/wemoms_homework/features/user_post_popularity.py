@@ -31,7 +31,8 @@ class UserPostPopularity(Feature):
                   f"user_post_last_{window}_clicks_count": sum,
                   f"user_post_last_{window}_ratio": lambda x: sum(x)/len(x)
               })
-              .fillna(0))
+              .fillna(0)
+              .reset_index())
          
         df_res = pd.DataFrame()
         for window in windows:
