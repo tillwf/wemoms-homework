@@ -179,7 +179,8 @@ pytest tests
 
 ## Future Work
 
- - Dockerfile
+ - Investigate poor results
+ - Enhance testset generation
  - Complete unit tests
  - More docstring
  - Implement a `Trainer` class to be able to change easily the library which makes the training and the prediction
@@ -199,19 +200,19 @@ However these kind of algorithm needs lots of data, can be complex to implement 
 ## Deployement
 
 Let's say we already have a data warehouse where the event are stored and updated live if needed.
-The different steps for a complete (Kubeflow) pipeline would be:
+The different steps for a complete (Kubeflow) pipeline and a deployment would be:
 
-- Feature Engineering: from the data warehouse, construct all the feature needed. It could be done with SQL queries (for instance using BigQuery's power) or Beam with Spark to have a more sustainable codebase. The features would be also store in databases like SQL for the training part, or in file like parquet or TFRecords. For the serving part, we could use other table depending on the use case, like BigTable.
+- **Feature Engineering**: from the data warehouse, construct all the feature needed. It could be done with SQL queries (for instance using `BigQuery`'s power) or `Beam` with `Spark` to have a more sustainable codebase. The features would be also store in databases like SQL for the training part, or in file like `Parquet` or `TFRecords`. For the serving part, we could use other table depending on the use case, like `BigTable`.
 
-- Model Training: once we have our features, if we use a neural network, we could deploy our code in a kuberntes pod using our Dockerfile, and launch the training. The evolution of training could be follow using the Tensorboard. At the end the model would be saved in GCS or S3 to be call later.
+- **Model Training**: once we have our features, if we use a neural network, we could deploy our code in a kuberntes pod using our Dockerfile, and launch multiple trainings. The evolution of the trainings could be follow using `Tensorboard`. At the end the models would be saved in `GCS` or `S3` to be call later.
 
-- Offline evaluation: once our model is trained, we want to observe its performances on a testset. We could use the `ML.PREDICT` function of BigQuery to apply our model to our testset stored in BigQuery and then plug a Google Data Studio on the results to have a proper dashboard. With this, we could easily compared multiple algorithms on the same dashboard and choose the best one to put in production.
+- **Offline evaluation**: once our model is trained, we want to observe its performances on a testset. We could use the `ML.PREDICT` function of `BigQuery` to apply our model to our testset stored in `BigQuery` and then plug a `Google Data Studio` on the results to have a proper dashboard. With this, we could easily compared multiple algorithms on the same dashboard and choose the best one to put in production.
 
-- Serving: the serving could be done in two different ways. Either you make your predictions in batch every night and store them in a big key-value database which will be called each time a user comes. Or the predictions are computed online.
-  - Offline approach: with few post and not too many users, this could be a good solution with very good response time. The generation of the feature for the testset will be very easy as it would be exactly the same code as the traiset generation. The only problem would be the lack of contextual feature: time of the day, device, live popularity.
-  - Online approach: slower (compute the feature then query the model) and more complicated to maintain (multiple services), this approach will be usually more accurate and would use every live and contextual signals. One problem will be the computation of the features live which can be tricky.
+- **Serving**: the serving could be done in two different ways. Either you make your predictions in batch every night and store them in a big key-value database which will be called each time a user comes. Or the predictions are computed online.
+  - *Offline approach*: with few post and not too many users, this could be a good solution with very good response time. The generation of the feature for the testset will be very easy as it would be exactly the same code as the traiset generation. The only problem would be the lack of contextual feature: time of the day, device, live popularity.
+  - *Online approach*: slower (compute the feature then query the model) and more complicated to maintain (multiple services), this approach will be usually more accurate and would use every live and contextual signals. One problem will be the computation of the features live which can be tricky.
 
-- Online evaluation
-  - Monitor the services: using grafana dashboard we could observe the number of users coming on the homepage, the number of query to our services (feature construction, predictions) and their response time, the total response time, the ressources usage.
+- **Online evaluation**
+  - Monitor the services: using `Grafana` dashboard we could observe the number of users coming on the homepage, the number of query to our services (feature construction, predictions) and their response time, the total response time, the ressources usage.
   - Monitor the performances: we can monitor live the business metric (CTR), but also other metrics like the mean rank or the MAP@k the clicked post to relate to the offline metrics.
   - AB Test: to assess the performance of our approach we have to perform an AB Test which will compare our metric to the previous version of the homepage. It has to be well calibrated to be able to make valuable conclusion (randomization unit, sample size, etc.). The conclusions should be made at the right moment: we should be careful with the first days results and wait to have statistical significance.
